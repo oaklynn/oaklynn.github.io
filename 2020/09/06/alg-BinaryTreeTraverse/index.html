@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>二叉树遍历学习笔记 | 天道酬勤</title><meta name="description" content="二叉树遍历学习笔记依照labuladong大神的建议从leetcode的探索里的二叉树开始进行刷题，基本题目为前序、中序、后序遍历用递归以及非递归实现。 鸣谢 [Cover&#x2F;Top Image] from unsplash Gary Bendig 遍历二叉树的方法合集 @leetcode  递归解法这个解法相对简单在labuladong的框架模板中也给出了方法，重复如下： 123456789101"><meta name="keywords" content="Algorithm"><meta name="author" content="Oaklynn"><meta name="copyright" content="Oaklynn"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://oaklynn.github.io/2020/09/06/alg-BinaryTreeTraverse/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><meta property="og:type" content="article"><meta property="og:title" content="二叉树遍历学习笔记"><meta property="og:url" content="https://oaklynn.github.io/2020/09/06/alg-BinaryTreeTraverse/"><meta property="og:site_name" content="天道酬勤"><meta property="og:description" content="二叉树遍历学习笔记依照labuladong大神的建议从leetcode的探索里的二叉树开始进行刷题，基本题目为前序、中序、后序遍历用递归以及非递归实现。 鸣谢 [Cover&#x2F;Top Image] from unsplash Gary Bendig 遍历二叉树的方法合集 @leetcode  递归解法这个解法相对简单在labuladong的框架模板中也给出了方法，重复如下： 123456789101"><meta property="og:image" content="https://images.unsplash.com/photo-1565612936643-ea2484086bb6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1060&amp;q=80"><meta property="article:published_time" content="2020-09-06T07:47:11.000Z"><meta property="article:modified_time" content="2020-09-06T10:23:48.258Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '5.0.2',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: false,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2020-09-06 20:23:48'
+}</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img {
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 5.0.2"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="https://avatars0.githubusercontent.com/u/12888441?s=400&amp;u=00b7f657602b063b89d382ca93e30b39569e807e&amp;v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">8</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">7</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E9%81%8D%E5%8E%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">二叉树遍历学习笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%B8%A3%E8%B0%A2"><span class="toc-number">1.1.</span> <span class="toc-text">鸣谢</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%92%E5%BD%92%E8%A7%A3%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">递归解法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E9%80%92%E5%BD%92%E8%A7%A3%E6%B3%95-%E4%BD%BF%E7%94%A8%E6%A0%88-Stack-%E8%BF%9B%E8%A1%8C%E8%BF%AD%E4%BB%A3"><span class="toc-number">1.3.</span> <span class="toc-text">非递归解法 - 使用栈(Stack)进行迭代</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E5%BA%8F%E9%81%8D%E5%8E%86%EF%BC%88%E6%A0%B9%E3%80%81%E5%B7%A6%E3%80%81%E5%8F%B3%EF%BC%89%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.3.1.</span> <span class="toc-text">前序遍历（根、左、右）步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%AD%E5%BA%8F%E9%81%8D%E5%8E%86%EF%BC%88%E5%B7%A6%E3%80%81%E6%A0%B9%E3%80%81%E5%8F%B3%EF%BC%89%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.3.2.</span> <span class="toc-text">中序遍历（左、根、右）步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E%E5%BA%8F%E9%81%8D%E5%8E%86%EF%BC%88%E5%B7%A6%E3%80%81%E5%8F%B3%E3%80%81%E6%A0%B9%EF%BC%89%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.3.3.</span> <span class="toc-text">后序遍历（左、右、根）步骤</span></a></li></ol></li></ol></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(https://images.unsplash.com/photo-1565612936643-ea2484086bb6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1060&amp;q=80)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">天道酬勤</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">二叉树遍历学习笔记</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-09-06T07:47:11.000Z" title="发表于 2020-09-06 17:47:11">2020-09-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-09-06T10:23:48.258Z" title="更新于 2020-09-06 20:23:48">2020-09-06</time></span></div><div class="meta-secondline"> </div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h2 id="二叉树遍历学习笔记"><a href="#二叉树遍历学习笔记" class="headerlink" title="二叉树遍历学习笔记"></a>二叉树遍历学习笔记</h2><p>依照labuladong大神的建议从leetcode的<code>探索</code>里的<a target="_blank" rel="noopener" href="https://leetcode.com/explore/learn/card/data-structure-tree/">二叉树</a>开始进行刷题，基本题目为前序、中序、后序遍历用递归以及非递归实现。</p>
+<h3 id="鸣谢"><a href="#鸣谢" class="headerlink" title="鸣谢"></a>鸣谢</h3><ul>
+<li>[Cover/Top Image] from unsplash <a target="_blank" rel="noopener" href="https://unsplash.com/photos/UZkR3zt_aig">Gary Bendig</a></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/binary-tree-preorder-traversal/solution/leetcodesuan-fa-xiu-lian-dong-hua-yan-shi-xbian-2/">遍历二叉树的方法合集 @leetcode</a></li>
+</ul>
+<h3 id="递归解法"><a href="#递归解法" class="headerlink" title="递归解法"></a>递归解法</h3><p>这个解法相对简单在labuladong的框架模板中也给出了方法，重复如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TreeNode</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    TreeNode left;</span><br><span class="line">    TreeNode right;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">traverse</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//root.val 前序</span></span><br><span class="line">    traverse(root.left);</span><br><span class="line">    <span class="comment">//root.val 中序</span></span><br><span class="line">    traverse(root.right);</span><br><span class="line">    <span class="comment">//root.val 后序</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="非递归解法-使用栈-Stack-进行迭代"><a href="#非递归解法-使用栈-Stack-进行迭代" class="headerlink" title="非递归解法 - 使用栈(Stack)进行迭代"></a>非递归解法 - 使用<code>栈(Stack)</code>进行迭代</h3><blockquote>
+<p>本质上是在模拟递归，因为在递归的过程中使用了系统栈，所以在迭代的解法中常用Stack来模拟系统栈。 - <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/binary-tree-preorder-traversal/solution/leetcodesuan-fa-xiu-lian-dong-hua-yan-shi-xbian-2/">a969295028</a></p>
+</blockquote>
+<h4 id="前序遍历（根、左、右）步骤"><a href="#前序遍历（根、左、右）步骤" class="headerlink" title="前序遍历（根、左、右）步骤"></a>前序遍历（根、左、右）步骤</h4><ol>
+<li>创建<code>Stack</code>来存放节点</li>
+<li>将头节点放入<code>Stack</code></li>
+<li>循环开始<ol>
+<li>当栈不为空，出栈 （第一次循环开始是根节点出栈）</li>
+<li>打印出栈元素</li>
+<li>如果右子数不为空，右子树入栈（因为是前序遍历，先入栈的后处理，所以要先压入右子树）</li>
+<li>如果左子树不为空，左子树入栈</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TreeNode</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    TreeNode left;</span><br><span class="line">    TreeNode right;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">preOrderIteration</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 1. 创建`Stack`来存放节点</span></span><br><span class="line">    Stack&lt;TreeNode&gt; stack = <span class="keyword">new</span> Stack();</span><br><span class="line">    <span class="comment">// 2. 将头节点放入`Stack`</span></span><br><span class="line">    stack.push(root);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 循环开始</span></span><br><span class="line">    <span class="keyword">while</span>(!stack.isEmpty()) &#123;</span><br><span class="line">        <span class="comment">// 1. 当栈不为空，出栈 （第一次循环开始是根节点出栈）</span></span><br><span class="line">        TreeNode node = stack.pop();</span><br><span class="line">        <span class="comment">// 2. 打印出栈元素</span></span><br><span class="line">        System.out.print(node.val + <span class="string">&quot; &quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 3. 如果右子数不为空，右子树入栈</span></span><br><span class="line">        <span class="keyword">if</span>(node.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">            stack.push(node.right);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4. 如果左子树不为空，左子树入栈</span></span><br><span class="line">        <span class="keyword">if</span>(node.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">            stack.poush(node.left);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="中序遍历（左、根、右）步骤"><a href="#中序遍历（左、根、右）步骤" class="headerlink" title="中序遍历（左、根、右）步骤"></a>中序遍历（左、根、右）步骤</h4><ol>
+<li>创建<code>Stack</code>来存放节点</li>
+<li>创建一个指针节点</li>
+<li>循环开始<ol>
+<li>当栈不为空 或 指针不为空时</li>
+<li>内部循环开始（目的是将左子树入栈）<ol>
+<li>当指针不为空时（为空是证明已经走到最左边的叶子节点了 - 内循环到这个时候终止，栈顶保存的就是最左的叶子节点）</li>
+<li>当前指针所指节点入栈（左子树的根节点）</li>
+<li>指针继续往左走</li>
+</ol>
+</li>
+<li>出栈</li>
+<li>打印出栈元素</li>
+<li>如果出栈元素的右子树不为空，将指针指向右子数</li>
+<li>本次循环结束</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inOrderIteration</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 1. 创建`Stack`来存放节点</span></span><br><span class="line">    <span class="comment">// 2. 创建一个指针节点</span></span><br><span class="line">    Stack&lt;TreeNode&gt; stack = <span class="keyword">new</span> Stack();</span><br><span class="line">    TreeNode cur = root;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 循环开始</span></span><br><span class="line">    <span class="comment">//    1. 当栈不为空 或 指针不为空时</span></span><br><span class="line">    <span class="keyword">while</span>(!stack.isEmpty() || cur != <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="comment">// 2. 内部循环开始</span></span><br><span class="line">        <span class="comment">//      1. 当指针不为空时</span></span><br><span class="line">        <span class="keyword">while</span>(cur != <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="comment">//      2. 入栈       </span></span><br><span class="line">            stack.push(cur);</span><br><span class="line">        <span class="comment">//      3. 指针继续往左走</span></span><br><span class="line">            cur = cur.left;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 出栈</span></span><br><span class="line">        <span class="comment">// 4. 打印出栈元素</span></span><br><span class="line">        TreeNode node = stack.pop();</span><br><span class="line">        System.out.println(node.val);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 5. 如果出栈元素的右子树不为空，将指针指向右子数</span></span><br><span class="line">        <span class="keyword">if</span>(node.right != <span class="keyword">null</span>)&#123;</span><br><span class="line">            cur = node.right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="后序遍历（左、右、根）步骤"><a href="#后序遍历（左、右、根）步骤" class="headerlink" title="后序遍历（左、右、根）步骤"></a>后序遍历（左、右、根）步骤</h4><p>利用前序遍历的思想，只是将压栈过程从（根、右、左）变成（根、左、右）<br>这样就是后序遍历的倒序</p>
+<ol>
+<li>创建两个<code>Stack</code>，一个栈（1）用来遍历，另一个栈（2）用来压入后序遍历的倒序，入栈时就变成后序遍历的正序。</li>
+<li>头节点入栈</li>
+<li>当栈1不为空时，循环开始<ol>
+<li>出栈（首次为头节点，之后为右子数、左子树）</li>
+<li>栈（2）入栈 - （根节点最早入，最后出）</li>
+<li>出栈元素左子树入栈</li>
+<li>出栈元素右子树入栈</li>
+</ol>
+</li>
+<li>当栈（2）不为空时<ol>
+<li>出栈</li>
+<li>打印元素</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">postOrderIteration</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. 创建两个`Stack`，一个栈（1）用来遍历，另一个栈（2）用来压入后序遍历的倒序</span></span><br><span class="line">    Stack&lt;TreeNode&gt; stack = <span class="keyword">new</span> Stack();</span><br><span class="line">    Stack&lt;TreeNode&gt; result = <span class="keyword">new</span> Stack();</span><br><span class="line">    <span class="comment">// 2. 头节点入栈</span></span><br><span class="line">    stack.push(root);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 当栈1不为空时，循环开始</span></span><br><span class="line">    <span class="keyword">while</span>(!stack.isEmpty())&#123;</span><br><span class="line">        <span class="comment">// 1. 出栈（首次为头节点，之后为右子数、左子树）</span></span><br><span class="line">        TreeNode node = stack.pop();</span><br><span class="line">        <span class="comment">// 2. 栈（2）入栈 - （根节点最早入，最后出）</span></span><br><span class="line">        result.push(node);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 出栈元素左子树入栈</span></span><br><span class="line">        <span class="keyword">if</span>(node.left != <span class="keyword">null</span>)&#123;</span><br><span class="line">            stack.push(node.left);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4. 出栈元素右子树入栈</span></span><br><span class="line">        <span class="keyword">if</span>(node.right != <span class="keyword">null</span>)&#123;</span><br><span class="line">            stack.push(node.right)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 当栈（2）不为空时</span></span><br><span class="line">    <span class="keyword">while</span>(!result.isEmpty())&#123;</span><br><span class="line">        <span class="comment">// 1. 出栈</span></span><br><span class="line">        TreeNode node = result.pop();</span><br><span class="line">        <span class="comment">// 2. 打印元素</span></span><br><span class="line">        System.out.println(node.val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Oaklynn</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://oaklynn.github.io/2020/09/06/alg-BinaryTreeTraverse/">https://oaklynn.github.io/2020/09/06/alg-BinaryTreeTraverse/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://oaklynn.github.io" target="_blank">天道酬勤</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Algorithm/">Algorithm</a></div><div class="post_share"><div class="social-share" data-image="https://images.unsplash.com/photo-1565612936643-ea2484086bb6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1060&amp;q=80" data-sites="bilibili"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/09/05/alg-01/"><img class="next-cover" data-lazy-src="https://images.unsplash.com/photo-1548092372-6fa982d00458?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1350&amp;q=80" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">跟着labuladong复习算法</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/09/05/alg-01/" title="跟着labuladong复习算法"><img class="relatedPosts_cover" data-lazy-src="https://images.unsplash.com/photo-1548092372-6fa982d00458?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-09-05</div><div class="relatedPosts_title">跟着labuladong复习算法</div></div></a></div></div></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By Oaklynn</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><div class="js-pjax"></div></div></body></html>
